@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Caching vs Database Sharding Under Varied Network Traffic</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/projects.css">
+    <link rel="stylesheet" href="css/advisor.css">
+     <link rel="stylesheet" href="css/profiles.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+</head>
+
+
+<body>  
+    <div class="content">
+        <div class="card" id="about">
+        <div class="col-md-12 col-xs-12">
+            <h1>Caching vs Database Sharding Under Varied Network Traffic</h1>
+            <h2 class="colorful">Team Members</h2>
+            <div class="profile-container">
+              <div class="profile">
+              <img src="img/andrew.jpeg" alt="picture">
+              <h1>Andrew Wong</h1>
+              <h3>CS '19 BS</h3>
+                <div class="social">
+                  <a href="https://github.com/andrewwong97/"><i class="fab fa-github"></i></a>
+                </div>
+              </div>
+              <div class="profile">
+              <img src="https://avatars1.githubusercontent.com/u/17332287?s=460&v=4" alt="picture">
+              <h1>Ryan Demo</h1>
+              <h3>CS, EE '18 BS, CS '19 MS</h3>
+                <div class="social">
+                  <a href="https://github.com/ryandemo/"><i class="fab fa-github"></i></a>
+                </div>
+              </div>
+              <div class="profile">
+              <img src="img/ben.jpg" alt="picture">
+              <h1>Benjamin Hoertnagl-Pereira</h1>
+              <h3>ECE '18 BS, CS '19 MS</h3>
+                <div class="social">
+                  <a href="https://github.com/bpereira615"><i class="fab fa-github"></i></a>
+                </div>
+              </div>
+              <div class="profile">
+              <img src="https://avatars2.githubusercontent.com/u/6342492?s=460&v=4" alt="picture">
+              <h1>Daniel Sohn </h1>
+              <h3>CS, AMS BS'19</h3>
+                <div class="social">
+                  <a href="https://github.com/dsohn45/"><i class="fab fa-github"></i></a>
+                </div>
+              </div>
+             </div>
+            <h3>Problem</h3>
+            <p><em>Database sharding and replication best practices for when data is poorly cacheable or requires fast first reads, and example applications that would use this paradigm.</em></p>
+            
+            <p>Cloud providers that offer multi-tenant services must handle compute hotspots reliably in order to optimize resource usage. Usually the problem is that the server lacks the CPU/memory to execute all the queries, or there is a bandwidth issue. Even if these are hardware limitations and not necessarily database dependent, it can be solved by sharding/replication either by dividing up the queries to different shards or moving a copy of the database closer. One approach to handle dynamic compute-heavy localities relying on the same data is via distributed database sharding.  For example, compute-heavy jobs requiring access to the same data shards may be bottlenecked by database reads, where network congestion (bandwidth) or CPU can be limiting factors of how fast requests are processed.</p> 
+            <p>To have enough copies of relevant data to balance the compute load across multiple nodes, the database can be replicated dynamically. It is the conditions under which replication should occur and the extent to which it should occur that we are interested in.</p>
+            <p>In context of the CAP theorem, there may be multiple optimal replication strategies based on the priorities of the distributed database. For example, given different loads such as read-heavy, mixed r/w, write-heavy operations, caching might be better in read-heavy situations, while sharding might be better when the data is updated frequently. 
+</p>
+            <h3>Proposed Solution</h3>
+            <p>Traditional SQL database drivers tend not to include native sharding features, whereas NoSQL drivers have built-in support for replication and sharding to increase horizontal scalability. We choose to implement our work with MongoDB since we have the most experience using it, there is extensive documentation on setting up sharding, and commercial solutions like Atlas give us a baseline to compare our solution to.</p>
+
+            <p>In dynamic sharding, the traffic and network stress will be analyzed by looking at r/w patterns in the database. This will then be run through an algorithm to determine the best shards and server locations. To cache our data, a cache will be placed in front of the database, having all r/w queries go through it. This can then be implemented without any sharding, with MongoDB built-in sharding, and our version of dynamic sharding. </p> 
+
+            <p>We intend to use a single MongoDB collection which will be sharded across servers. Incoming requests will be handled by an ExpressJS server, which connects to Redis or MongoDB based on the network configuration we are testing. We expect the added latency due to this abstraction to be consistent across tests.</p>
+                        
+            <p>Our proposed system is different from existing solutions since we determine a configuration based on data access patterns by running different load patterns on dynamically sharded MongoDB collections. We expose a flexible open source implementation for use and improvement by developers and researchers.</p>
+            <!-- <a href="img/Final Pres.pdf"><button class="slide-deck">Slide Deck PDF</button></a> -->
+            <!-- <a href="code/semesterly-comments.zip" download><button class="slide-deck"><i class="fab fa-github" style="color:#fff;margin-right:7px;"></i>Download</button></a> -->
+        </div>
+    </div>
+   <!--  <div class="card advisor">
+            <div class="description">
+                <h1>Advisor Portal Demo</h1>
+                <h2>Create an account with a timetable and share it with an advisor using their account email. The advisor receives read-only privileges on your shared timetable and can add comments on the lower right hand side.</h2>
+                <a href="#"><button class="btn-more">Demo</button></a>
+            </div>
+            <div class="preview">
+                <img src="img/add_advisor.png">
+            </div>
+        </div>
+    </div> -->
+    
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+</html>
+

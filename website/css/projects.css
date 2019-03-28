@@ -1,0 +1,64 @@
+.slide-deck {
+    padding: 10px;
+    margin: 10px 0;
+    margin-right: 5px;
+    width: 150px;
+    border-radius: 4px;
+    background-color: #2ecc71;
+    font-size: 18px;
+    color: #fff;
+    border: none;
+    transition: animation 500ms ease-in, box-shadow 200ms ease-in;
+}
+
+.slide-deck:hover {
+    box-shadow: 0 2px 6px 2px rgba(0, 0, 0, 0.1);
+}
+
+.slide-deck:active, .slide-deck:focus {
+    box-shadow: inset 0 2px 6px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-more {
+    padding: 10px;
+    margin: 10px 0;
+    width: 100px;
+    border-radius: 50px;
+    background-color: #2ecc71;
+    font-size: 14px;
+    color: #fff;
+    border: none;
+    transition: animation 500ms ease-in;
+}
+
+button > a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.btn-more:hover {
+    animation: pop 400ms ease-in 0s;
+}
+
+button:active, button:focus {
+    outline: none;
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.15);
+    }
+    50% {
+        transform: scale(1);
+    }
+    75% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
