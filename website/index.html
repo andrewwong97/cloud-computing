@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Caching vs Database Sharding Under Varied Network Traffic</title>
+    <title>Caching vs Database Replication Strategies Based on Data Workload</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -15,7 +15,7 @@
     <div class="content">
       <div class="card" id="about">
         <div class="col-md-12 col-xs-12">
-          <h1>Caching vs Database Sharding Under Varied Network Traffic</h1>
+          <h1>Caching vs Database Replication Strategies Based on Data Workload</h1>
           <h2 class="colorful">Team Members</h2>
           <div class="profile-container">
             <div class="profile">
@@ -45,27 +45,46 @@
             <div class="profile">
               <img src="https://avatars2.githubusercontent.com/u/6342492?s=460&v=4" alt="picture">
               <h1>Daniel Sohn </h1>
-              <h3>CS, AMS BS'19</h3>
+              <h3>CS, AMS '20 BS</h3>
               <div class="social">
                 <a href="https://github.com/dsohn45/"><i class="fab fa-github"></i></a>
               </div>
             </div>
           </div>
         </div>
-        <h3>Problem</h3>
-        <p><em>Database sharding and replication best practices for when data is poorly cacheable or requires fast first reads, and example applications that would use this paradigm.</em></p>
+        <h3>Problem Statement</h3>
+        <p>We are looking to investigate strategies for database caching and replication depending on the data workload. Specifically, for a tenant in a datacenter that has to compute on large amounts of uniformly sampled data queried from a database, where first read time can add latency, which combination of local caching and database replication minimizes job compute times?</p>
+        <h3>Experiment</h3>
+        <p>Our baseline will measure job time using one database node and 32 compute nodes all sending it queries with no compute node local caches. The database node will have an in-memory integrated cache.</p>
+        <p>The independent variables are:</p>
+        <ul>
+          <li><p>Data compute workload: randomly uniformly sampled, sequential</p></li>
+          <li><p>Number of jobs per compute node: 32</p></li>
+          <li><p>Database size: 4 GB, 16 GB, 64 GB</p></li>
+          <li><p>Number of shards: 1, 2, 4, 8</p></li>
+          <li><p>Number of replicas per shard: 1, 2, 4, 8</p></li>
+          <li><p>Size of local caches for queried data on compute nodes: 0 GB, 0.5 GB, 1 GB, 2 GB</p></li>
+        </ul>
+        <p>The measured dependent variables are:</p>
+        <ul>
+          <li><p>Time for job completion</p></li>
+          <li><p>CPU and memory utilization per compute node and per database node</p></li>
+        </ul>
+        <p>From all permutations, we will look at results to determine best practices for caching and/or replication depending on mainly the data compute workload, and analyzing the performance results of each strategy.</p>
+        <p>If the previous results prove conclusive, we will develop a simple query load balancer to that dynamically adjusts the amount of database nodes containing shards/replicas based on heuristics from static results, and evaluate its performance compared to the static amount of nodes.</p>
+        <a href="https://github.com/andrewwong97/cloud-computing"><button class="slide-deck"><i class="fab fa-github" style="color:#fff;margin-right:7px;"></i>Code</button></a>
+        <h3>Existing Work</h3>
+        <a href="http://www.pdl.cmu.edu/PDL-FTP/CloudComputing/p236-xiao-SoCC15.pdf">ShardFS vs. IndexFS: Replication vs. Caching Strategies for Distributed Metadata Management in Cloud Storage Systems</a>
+        <p>The rapid growth of cloud storage systems calls for fast and scalable namespace processing. While few commercial file systems offer anything better than federating individually non-scalable namespace servers, a recent academic file system, IndexFS, demonstrates scalable namespace processing based on client caching of directory entries and permissions (directory lookup state) with no per-client state in servers. In this paper we explore explicit replication of directory lookup state in all servers as an alternative to caching this information in all clients. Both eliminate most repeated RPCs to different servers in order to resolve hierarchical permission tests. Our realization for server replicated directory lookup state, ShardFS, employs a novel file system specific hybrid optimistic and pessimistic concurrency control favoring single object transactions over distributed transactions. Our experimentation suggests that if directory lookup state mutation is a fixed fraction of operations (strong scaling for metadata), server replication does not scale as well as client caching, but if directory lookup state mutation is proportional to the number of jobs, not the number of processes per job, (weak scaling for metadata), then server replication can scale more linearly than client caching and provide lower 70 percentile response times as well.</p>
+        <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.99.2100&rep=rep1&type=pdf">Analysis of Caching and Replication Strategies for Web Applications</a>
+        <p>Replication and caching mechanisms are often employed to enhance the performance of Web applications. In this article, we present a qualitative and quantitative analysis of state-of-the-art replication and caching techniques used to host Web applications. Our analysis shows that the selection of best mechanism is heavily dependant on the data workload and requires careful analysis of the application characteristics. To this end, we propose a technique that may enable future Web practitioners to compare the performance of different caching/replication mechanisms.</p>
+        <h3>Extra Notes</h3>
+        <p>Database sharding and replication best practices for when data is poorly cacheable or requires fast first reads, and example applications that would use this paradigm.</p>
         <p>Cloud providers that offer multi-tenant services must handle compute hotspots reliably in order to optimize resource usage. Usually the problem is that the server lacks the CPU/memory to execute all the queries, or there is a bandwidth issue. Even if these are hardware limitations and not necessarily database dependent, it can be solved by sharding/replication either by dividing up the queries to different shards or moving a copy of the database closer. One approach to handle dynamic compute-heavy localities relying on the same data is via distributed database sharding.  For example, compute-heavy jobs requiring access to the same data shards may be bottlenecked by database reads, where network congestion (bandwidth) or CPU can be limiting factors of how fast requests are processed.</p>
         <p>To have enough copies of relevant data to balance the compute load across multiple nodes, the database can be replicated dynamically. It is the conditions under which replication should occur and the extent to which it should occur that we are interested in.</p>
         <p>In context of the CAP theorem, there may be multiple optimal replication strategies based on the priorities of the distributed database. For example, given different loads such as read-heavy, mixed r/w, write-heavy operations, caching might be better in read-heavy situations, while sharding might be better when the data is updated frequently. </p>
-        <h3>Proposed Solution</h3>
-        <p>Traditional SQL database drivers tend not to include native sharding features, whereas NoSQL drivers have built-in support for replication and sharding to increase horizontal scalability. We choose to implement our work with MongoDB since we have the most experience using it, there is extensive documentation on setting up sharding, and commercial solutions like Atlas give us a baseline to compare our solution to.</p>
-        <p>In dynamic sharding, the traffic and network stress will be analyzed by looking at r/w patterns in the database. This will then be run through an algorithm to determine the best shards and server locations. To cache our data, a cache will be placed in front of the database, having all r/w queries go through it. This can then be implemented without any sharding, with MongoDB built-in sharding, and our version of dynamic sharding. </p>
-        <p>We intend to use a single MongoDB collection which will be sharded across servers. Incoming requests will be handled by an ExpressJS server, which connects to Redis or MongoDB based on the network configuration we are testing. We expect the added latency due to this abstraction to be consistent across tests.</p>
-        <p>Our proposed system is different from existing solutions since we determine a configuration based on data access patterns by running different load patterns on dynamically sharded MongoDB collections. We expose a flexible open source implementation for use and improvement by developers and researchers.</p>
         <!-- <a href="img/Final Pres.pdf"><button class="slide-deck">Slide Deck PDF</button></a> -->
-
-    
-        <a href="https://github.com/andrewwong97/cloud-computing"><button class="slide-deck"><i class="fab fa-github" style="color:#fff;margin-right:7px;"></i>Code</button></a>
+        
       </div>
       <!-- <div class="card emo">
         <div class="description">
