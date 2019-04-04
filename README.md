@@ -8,7 +8,7 @@
 
 data is stored on `/data/db`
 
-## Frontend Web Server Setup
+## API Setup
 Used to receive r/w requests and perform database insertions and updates on a CRUD resource
 
 Using Python 2.7
