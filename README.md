@@ -18,8 +18,6 @@ log is stored at `/var/log/mongodb.log`
 2. Start Redis (default localhost, port 6379)
 Can change host and port in `blog/blog/config.json`
 
-## Frontend Web Server Setup
-=======
 ## API Setup
 Used to receive r/w requests and perform database insertions and updates on a CRUD resource
 
