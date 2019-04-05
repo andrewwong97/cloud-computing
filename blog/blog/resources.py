@@ -3,10 +3,11 @@ from flask import Flask, request
 from flask_restful import Resource
 from bson.objectid import ObjectId
 from database import getDB
+import json
 
 
 def _serialize(obj):
-    # serialize in a rea
+    # used to convert object id to string
     new_obj = obj
     for field, value in new_obj.items():
         if field == '_id':
@@ -17,17 +18,45 @@ def _serialize(obj):
 class Entry(Resource):
     # blog post entry
 
+    def __init__(self, **kwargs):
+        self.cache = kwargs['cache']
+
     def get(self, entry_id=None):
         db = getDB()
+
         if entry_id:
-            entry = db.entries.find_one({'_id': ObjectId(entry_id)})
-            if entry:
-                return _serialize(entry)
+            if self.cache:
+                val = self.cache.get(entry_id)
+                if val:
+                    print('cache hit')  # TODO: enable logging instead of print statements
+                    return json.loads(val)
+                else:
+                    print('cache miss')
+                    entry = db.entries.find_one({'_id': ObjectId(entry_id)})
+                    val = json.dumps(_serialize(entry))
+                    self.cache.set(entry_id, val)
+                    print('cache set {}: {}'.format(entry_id, val))
+                    return json.loads(val)
             else:
-                return {'reason': 'blog entry does not exist'}, 404
+                # do not use cache
+                entry = db.entries.find_one({'_id': ObjectId(entry_id)})
+                if entry:
+                    return _serialize(entry)
+                else:
+                    return {'reason': 'blog entry does not exist'}, 404
         else:
-            entries = [_serialize(e) for e in db.entries.find()]
-            return entries, 200
+            if self.cache:
+                val = self.cache.get('all_entries')
+                if val:
+                    print('cache hit')
+                    return json.loads(val)
+                else:
+                    print('cache miss')
+                    entries = [_serialize(e) for e in db.entries.find()]
+                    self.cache.set('all_entries', json.dumps(entries))
+                    return entries
+            else:
+                return [_serialize(e) for e in db.entries.find()]
 
     def post(self):
         # create blog post
@@ -36,14 +65,25 @@ class Entry(Resource):
         user = data['user'] if 'user' in data else None
         title = data['title'] if 'title' in data else None
         body = data['body'] if 'body' in data else None
+
+        entry = {
+            'user': user,
+            'title': title,
+            'body': body
+        }
         if user and title and body:
-            created = db.entries.insert_one({'user': user, 'title': title, 'body': body})
+            created = db.entries.insert_one(entry)
             if created.acknowledged:
-                return _serialize(created), 200
+                ser = _serialize(entry)
+                if self.cache:
+                    self.cache.set(ser['_id'], json.dumps(ser))
+                    print('cache set {}: {}'.format(ser['_id'], json.dumps(ser)))
+                return ser, 200
         return {'reason': 'user or title or body is null'}, 500
 
     def put(self, entry_id=None):
-        # Update with partial or full post information. Changes only the fields that differ between old and new post.
+        # Update with partial or full post information.
+        # Changes only the fields that differ between old and new post.
         db = getDB()
         if not entry_id:
             return {'reason': 'entry id required for updates'}, 404
@@ -62,11 +102,16 @@ class Entry(Resource):
             'title': title,
             'body': body,
         }
-        updated = db.users.update_one({
+        update_result = db.users.update_one({
             '_id': ObjectId(entry_id)
         }, {'$set': updated})
 
-        if updated.acknowledged:
-            return _serialize(db.users.find_one({'_id': ObjectId(entry_id)}))
+        if update_result.acknowledged:
+            updated['_id'] = entry_id
+            ser = _serialize(updated)
+            if self.cache:
+                self.cache.set(entry_id, json.dumps(ser))
+                print('cache set {}: {}'.format(entry_id, json.dumps(ser)))
+            return ser, 200
         else:
             return {'reason': 'db failed to update entry object'}, 500
