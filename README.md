@@ -1,12 +1,17 @@
 # Cloud Computing Final Project
 
-## Start MongoDB
+## MongoDB Setup
 
 1. Follow instructions on installing local MongoDB server https://docs.mongodb.com/manual/administration/install-community/
 2. Run Mongo as a daemon: `sudo mongod --fork --logpath /var/log/mongodb.log`
 3. Connect to mongo instance by running `mongo` in a terminal window
 
 data is stored on `/data/db`
+
+## Redis Setup
+1. Install Redis
+2. Start Redis (default localhost, port 6379)
+Can change host and port in `blog/blog/config.json`
 
 ## Frontend Web Server Setup
 Used to receive r/w requests and perform database insertions and updates on a CRUD resource
