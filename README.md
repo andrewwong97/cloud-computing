@@ -34,3 +34,6 @@ Used to receive r/w requests and perform database insertions and updates on a CR
 
 Flask-Restful to parse and return structured requests and responses using REST.
 Pymongo as Mongo driver for any db requests
+
+### Hadoop - Chained MapReduce
+As a simple initial test, we create 2^10 random samples of key, message pairs as would be found in or database, and pipes it to the mapper and reducer: `./test_mapreduce.sh`
