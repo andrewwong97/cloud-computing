@@ -4,7 +4,7 @@
 Follow these steps in order to get your project environment running.
 
 1. Follow instructions on installing local MongoDB server https://docs.mongodb.com/manual/administration/install-community/
-2. Run Mongo as a daemon: `sudo mongod --fork --logpath /var/log/mongodb.log`. <- if that doesn't work: https://stackoverflow.com/questions/28591101/starting-mongod-fork-error-child-process-failed-exited-with-error-number-1
+2. Ensure that directory `/data/db` exists. Run Mongo as a daemon: `sudo mongod --fork --logpath /var/log/mongodb.log`.
 3. Connect to mongo instance by running `mongo` in a terminal window
 4. Create project db by running `use cloud` in the mongo shell
 5. Test project db by creating a sample blog post by running the following command, replacing value fields as necessary: `db.entries.insert({'user': 'my_name', 'title': 'my_title', 'body': 'my_body'})`
