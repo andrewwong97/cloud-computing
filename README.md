@@ -17,7 +17,7 @@ log is stored at `/var/log/mongodb.log`
 1. Install Redis
 2. Start Redis (default localhost, port 6379)
 
-Can change host and port in `blog/blog/config.json`. Enable/disable Redis here: https://github.com/andrewwong97/cloud-computing/blob/master/blog/blog/api.py
+Can change host and port in `blog/blog/config.json`. Enable/disable Redis here: https://github.com/andrewwong97/cloud-computing/blob/26b602ecf52f4777bc778942969c6e05589b0deb/blog/blog/api.py#L9
 
 ## API Setup
 Used to receive r/w requests and perform database insertions and updates on a CRUD resource
