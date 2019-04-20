@@ -42,18 +42,23 @@
 .profile h1, .profile h2, .profile h3 {
   text-align: center;
   font-family: "Source Sans Pro", sans-serif;
-  font-weight: 300;
+}
+
+.profile h1, .profile h2 {
   height: 40px;
+  font-weight: 400;
 }
 
 .profile h3 {
   font-size: .8em;
   margin-top: 10px;
+  font-weight: 300;
 }
 
 .social {
   flex: 0 100%;
   text-align: center;
+  align-self: flex-end;
 }
 
 .social i {
