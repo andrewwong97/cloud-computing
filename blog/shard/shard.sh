@@ -7,20 +7,20 @@
 
 #cleanup
 
-killall mongod
-killall mongos
-killall mongo
+sudo killall mongod
+sudo killall mongos
+sudo killall mongo
 
 #instantiate the config server
 #ssh into config
 config1 << !
 
-rm -rf /data/rs*
-mkdir -p /data/rs1 /data/rs2 /data/rs3
+sudo rm -rf /data/rs*
+sudo mkdir -p /data/rs1 /data/rs2 /data/rs3
 
-mongod --configsvr --replSet configReplSet --dbpath /data/rs1 --port 27017 --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log
-mongod --configsvr --replSet configReplSet --dbpath /data/rs2 --port 27018 --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log
-mongod --configsvr --replSet configReplSet --dbpath /data/rs3 --port 27019 --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log
+sudo mongod --configsvr --replSet configReplSet --dbpath /data/rs1 --port 27017 --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log
+sudo mongod --configsvr --replSet configReplSet --dbpath /data/rs2 --port 27018 --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log
+sudo mongod --configsvr --replSet configReplSet --dbpath /data/rs3 --port 27019 --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log
 
 #Initiate replica set 
 mongo config:27017 << 'EOF'
@@ -38,12 +38,12 @@ EOF
 #Creating Shard 1
 shard1 << !
 
-rm -rf /data/rs*
-mkdir -p /data/rs1 /data/rs2 /data/rs3
+sudo rm -rf /data/rs*
+sudo mkdir -p /data/rs1 /data/rs2 /data/rs3
 
-mongod --shardsvr --replSet shardReplSet1 --dbpath /data/rs1 --port 27017 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
-mongod --shardsvr --replSet shardReplSet1 --dbpath /data/rs2 --port 27018 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
-mongod --shardsvr --replSet shardReplSet1 --dbpath /data/rs3 --port 27019 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
+sudo mongod --shardsvr --replSet shardReplSet1 --dbpath /data/rs1 --port 27017 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
+sudo mongod --shardsvr --replSet shardReplSet1 --dbpath /data/rs2 --port 27018 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
+sudo mongod --shardsvr --replSet shardReplSet1 --dbpath /data/rs3 --port 27019 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
 
 
 #Initiate replica set 
@@ -62,12 +62,12 @@ EOF
 #Creating Shard 1
 shard2 << !
 
-rm -rf /data/rs*
-mkdir -p /data/rs1 /data/rs2 /data/rs3
+sudo rm -rf /data/rs*
+sudo mkdir -p /data/rs1 /data/rs2 /data/rs3
 
-mongod --shardsvr --replSet shardReplSet2 --dbpath /data/rs1 --port 27017 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
-mongod --shardsvr --replSet shardReplSet2 --dbpath /data/rs2 --port 27018 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
-mongod --shardsvr --replSet shardReplSet2 --dbpath /data/rs3 --port 27019 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
+sudo mongod --shardsvr --replSet shardReplSet2 --dbpath /data/rs1 --port 27017 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
+sudo mongod --shardsvr --replSet shardReplSet2 --dbpath /data/rs2 --port 27018 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
+sudo mongod --shardsvr --replSet shardReplSet2 --dbpath /data/rs3 --port 27019 --bind_ip 127.0.0.1,shard1 --fork  --logpath /var/log/mongodb.log
 
 
 #Initiate replica set 
@@ -86,7 +86,7 @@ EOF
 #Connect mongos
 router << !
 
-mongos --configdb configReplSet/config:27017 -port 27017 --bind_ip 127.0.0.1,router --fork --logpath /var/log/mongos.log
+sudo mongos --configdb configReplSet/config:27017 -port 27017 --bind_ip 127.0.0.1,router --fork --logpath /var/log/mongos.log
 
 #run mongo instant on port that mongos is listening to
 mongo --host router --port 27020 << 'EOF'
@@ -105,3 +105,5 @@ sh.shardCollection("cloud.messages", { _id : "hashed"} )
 EOF
 
 !
+
+
