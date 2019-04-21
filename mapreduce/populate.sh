@@ -15,7 +15,15 @@ function makeMessage(length) {
 }
 
 
-for (var i = 1; i <= 1000000; i++) {    
+var n = 1000000;
+var p = n / 10;
+
+for (var i = 1; i <= n; i++) {
+
+  if (i % p == 0) {
+    system.out.printf("step");
+  }
+  
   db.messages.insert( 
     { 
       _id : i,
