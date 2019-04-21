@@ -6,17 +6,41 @@
 Using default Debian 9 node in Google Cloud Compute Engine with 3.75 GB of memory and 1 vCPU. 
 
 ## Reference
+
 **Aliases Used**
+
 `hadoop` - server used for Hadoop chained MR
+
 `router` - app router that receives db queries and talks to config servers for shard to get data from 
+
 `shard1` - shard server 1
+
 `shard2` - shard server 2
+
 `config1` - holds metadata about shards and shard lookup table
 
+
 **Architecture**
+
 1 mongos router, 1 config server, 2 shard servers. Each running with the same amount of resources for now, using hashing as the sharding strategy.
 
+As long as you are ssh'ed into a node with the private cluster, then connecting to the database is simple. Each node should have Mongo set up already, so you can use the `mongo` client by running `mongo router:27017/cloud` to access the sharded collection, and `mongo router:27017/single` to access the non-sharded collection. Similarly, a database connection string would look like: `mongodb://router:27017/cloud`. 
+
+![image](https://user-images.githubusercontent.com/7339169/56473300-2f3cbf80-6437-11e9-811f-ce7a4fc50ef5.png)
+
+Each node in the private cluster also has the following `/etc/hosts` file to quickly look up other hosts in the cluster.
+```
+10.142.0.2	hadoop
+10.128.0.3	router
+10.128.0.5	shard1
+10.128.0.6	shard2
+10.128.0.4	config
+```
+
+
 ## New Mongo Server Setup
+If you want to create your own cluster, please follow the directions below. 
+
 Adapted from MongoDB documentation: [https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/) 
 
 **Run these commands in order for each Mongo node**
