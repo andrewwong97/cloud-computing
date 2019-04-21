@@ -4,11 +4,10 @@
 N=50000
 
 # starting query set size
-M=100
+M=10
 
 shuf -i 0-$N -n $M > test_input.txt
 
-# test="test_db.py"
 function test {
 	cat test_input.txt | python $1 | python mapper.py | python reducer.py > test_output_1.txt
 	cat test_output_1.txt | python $1 | python mapper.py | python reducer.py > test_output_2.txt
@@ -25,6 +24,14 @@ function test {
 	rm test_output.txt
 }
 
-test "test_db.py"
-test "shard_db.py"
-test "cache_db.py"
+echo "Test DB (in memory Python dict):"
+time (test "test_db.py")
+echo
+
+echo "Replicated DB (sharded across nodes):"
+time (test "shard_db.py")
+echo
+
+echo "Cached DB (single node with Redis)"
+time (test "cache_db.py")
+echo
