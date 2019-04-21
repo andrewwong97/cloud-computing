@@ -3,7 +3,7 @@
 
 # Cluster Setup
 
-Using default Debian 9 node in Google Cloud Compute Engine with 3.75 GB of memory and 1 vCPU. 
+Using default Debian 9 node in Google Cloud Compute Engine with 3.75 GB of memory and 1 vCPU. Shard nodes: 1.7 GB of memory, 1 vCPU.
 
 ## Reference
 
