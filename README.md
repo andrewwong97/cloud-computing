@@ -6,14 +6,22 @@
 Using default Debian 9 node in Google Cloud Compute Engine with 3.75 GB of memory and 1 vCPU. 
 
 ## Reference
+
 **Aliases Used**
+
 `hadoop` - server used for Hadoop chained MR
+
 `router` - app router that receives db queries and talks to config servers for shard to get data from 
+
 `shard1` - shard server 1
+
 `shard2` - shard server 2
+
 `config1` - holds metadata about shards and shard lookup table
 
+
 **Architecture**
+
 1 mongos router, 1 config server, 2 shard servers. Each running with the same amount of resources for now, using hashing as the sharding strategy.
 
 As long as you are ssh'ed into a node with the private cluster, then connecting to the database is simple. Each node should have Mongo set up already, so you can use the `mongo` client by running `mongo router:27017/cloud` to access the sharded collection, and `mongo router:27017/single` to access the non-sharded collection. Similarly, a database connection string would look like: `mongodb://router:27017/cloud`. 
