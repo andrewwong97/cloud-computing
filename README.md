@@ -106,14 +106,25 @@ Best practice: for each MR client node, run a single instance of `mongos` , whic
 
 
 ## Redis (Debian 9)
-Configure cache size: max memory, policy
+
+1. `sudo apt-get install redis-server -y`
+2. `sudo systemctl enable redis-server.service`
+3. `sudo systemctl start redis-server.service`
+
+4. To configure cache size: max memory, policy
 `sudo vim /etc/redis/redis.conf`
 
-`sudo systemctl restart redis-server.service`
+Add these two lines to conf:
+```
+maxmemory 256mb
+maxmemory-policy allkeys-lru
+```
 
-How to use Redis as an LRU cache:   [https://redis.io/topics/lru-cache](https://redis.io/topics/lru-cache) 
+5. To access cli, run `redis-cli`
 
-Installation notes:   [https://tecadmin.net/install-redis-on-debian-9-stretch/](https://tecadmin.net/install-redis-on-debian-9-stretch/) 
+Adapted from: 
+- How to use Redis as an LRU cache:   [https://redis.io/topics/lru-cache](https://redis.io/topics/lru-cache) 
+- Installation notes:   [https://tecadmin.net/install-redis-on-debian-9-stretch/](https://tecadmin.net/install-redis-on-debian-9-stretch/) 
 
 ## Hadoop - Chained MapReduce
 As a simple initial test, we create 2^10 random samples of key, message pairs as would be found in or database, and pipes it to the mapper and reducer: `./test_mapreduce.sh`
