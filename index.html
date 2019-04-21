@@ -78,8 +78,8 @@
         </ul>
         <p>The measured dependent variables are:</p>
         <ul>
-          <li><p>Time for job completion</p></li>
-          <li><p>CPU and memory utilization per compute node and per database node</p></li>
+          <li><p>Elapsed (real/wall) time for job completion</p></li>
+          <li><p>CPU time (user + sys) and peak memory usage per compute node and per database node</p></li>
         </ul>
         <p>From all permutations, we will look at results to determine best practices for caching and/or replication depending on mainly the data compute workload, and analyzing the performance results of each strategy.</p>
         <p>If the previous results prove conclusive, we will develop a simple query load balancer to that dynamically adjusts the amount of database nodes containing shards/replicas based on heuristics from static results, and evaluate its performance compared to the static amount of nodes.</p>
@@ -98,7 +98,9 @@
           <li><p>May 4: Results and Paper Completion</p></li>
         </ul>
         <h3>Results (Work in Progress)</h3>
-        <p>We are currently running experiments and expect to have all the data by 4/24. Delays in collection have been due to modeling the data for our workload, testing the code and getting the database cluster to behave the way we want it to.</p>
+        <p>We are currently running and refining experiments, and expect to have all the data by 4/24. Delays in collection have been due to modeling the data for our workload, testing the code and getting the database cluster to behave the way we want it to.</p>
+        <p>Initial results with 100 database keys, 1-2 shards, and a Redis cache size of 256MB show that sharding without Redis has increasingly worse performance as the MR chain grows in length. We will let this inform the experiment parameter permutations that we focus on in the short term.</p>
+        <a href="https://docs.google.com/document/d/1sSOxL6yRWxurd6sCd54RiuN8viMvkDu4GQ-vu953i_Q/edit"><button class="slide-deck">Unformatted Results</button></a>
         <a href="https://docs.google.com/spreadsheets/d/1fDwYwueKhE5hdaxhqf5m62Psqo0PluMvmk-dVW2a5oE/edit?usp=sharing"><button class="slide-deck">Spreadsheet</button></a>
         <h3>Existing Work</h3>
         <a href="http://www.pdl.cmu.edu/PDL-FTP/CloudComputing/p236-xiao-SoCC15.pdf">ShardFS vs. IndexFS: Replication vs. Caching Strategies for Distributed Metadata Management in Cloud Storage Systems</a>
