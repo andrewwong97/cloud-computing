@@ -10,8 +10,13 @@ from util import N
 # can be directly imported using mongoimport tool
 # by running mongoimport --db cloud --collection messages --file /path/to/data.json --jsonArray
 d = []
-for i in range(sys.argv[1]*500000, sys.argv[1] + 500000):
+init = int(sys.argv[1])
+file = 'data' + sys.argv[1] + '.json'
+
+for i in range(init*500000, init+ 500000):
 	message = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(100))
 	d.append({ "_id": i, "message": message })
-with open('data.json', 'w') as f:
+with open(file, 'w') as f:
 	json.dump(d, f, indent=4, ensure_ascii=False)
+
+close(file)
