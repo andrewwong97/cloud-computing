@@ -16,19 +16,15 @@ sudo killall mongo
 config1 << !
 
 sudo rm -rf /data/rs*
-sudo mkdir -p /data/rs1 /data/rs2 /data/rs3
+sudo mkdir -p /data/rs1
 
 sudo mongod --configsvr --replSet configReplSet --dbpath /data/rs1 --port 27017 --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log
-sudo mongod --configsvr --replSet configReplSet --dbpath /data/rs2 --port 27018 --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log
-sudo mongod --configsvr --replSet configReplSet --dbpath /data/rs3 --port 27019 --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log
 
 #Initiate replica set 
 mongo config:27017 << 'EOF'
 
 	config = { _id: "configReplSet", configsvr: true, members:[
-	          { _id : 0, host : "10.128.0.4:27017" },
-	          { _id : 1, host : "10.128.0.4:27018" },
-	          { _id : 2, host : "10.128.0.4:27019" }]};
+	          { _id : 0, host : "10.128.0.4:27017" }]};
 	rs.initiate(config);
 
 EOF
