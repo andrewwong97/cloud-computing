@@ -99,7 +99,7 @@
         </ul>
         <h3>Results (Work in Progress)</h3>
         <p>We are currently running and refining experiments, and expect to have all the data by 4/24. Delays in collection have been due to modeling the data for our workload, testing the code and getting the database cluster to behave the way we want it to.</p>
-        <p>Initial results with 100 database keys, 1-2 shards, and a Redis cache size of 256MB show that sharding without Redis has increasingly worse performance as the MR chain grows in length. We will let this inform the experiment parameter permutations that we focus on in the short term.</p>
+        <p>Initial results with 100 database keys, 1-2 shards, and a Redis cache size of 256MB show that sharding without Redis has increasingly worse performance as the MR chain grows in length compared to a single shard with Redis. We also observe that as a MR chain grows in length with constant sharding and caching strategies the job completion time grows linearly, and approximately doubles with each order of magnitude increase in DB size. We will let these initial results inform the experiment parameter permutations that we focus on in the short term.</p>
         <a href="https://docs.google.com/document/d/1sSOxL6yRWxurd6sCd54RiuN8viMvkDu4GQ-vu953i_Q/edit"><button class="slide-deck">Unformatted Results</button></a>
         <a href="https://docs.google.com/spreadsheets/d/1fDwYwueKhE5hdaxhqf5m62Psqo0PluMvmk-dVW2a5oE/edit?usp=sharing"><button class="slide-deck">Spreadsheet</button></a>
         <h3>Existing Work</h3>
