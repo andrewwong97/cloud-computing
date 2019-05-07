@@ -30,7 +30,7 @@ As long as you are ssh'ed into a node with the private cluster, then connecting 
 
 Each node in the private cluster also has the following `/etc/hosts` file to quickly look up other hosts in the cluster.
 ```
-10.142.0.2	hadoop
+10.150.0.2	hadoop
 10.128.0.3	router
 10.128.0.5	shard1
 10.128.0.6	shard2
