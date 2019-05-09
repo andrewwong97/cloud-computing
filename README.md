@@ -28,8 +28,6 @@ Using default Debian 9 node in Google Cloud Compute Engine with 3.75 GB of memor
 
 As long as you are ssh'ed into a node with the private cluster, then connecting to the database is simple. Each node should have Mongo set up already, so you can use the `mongo` client by running `mongo router:27017/cloud` to access the sharded collection, and `mongo router:27017/single` to access the non-sharded collection. Similarly, a database connection string would look like: `mongodb://router:27017/cloud`. 
 
-![image](https://user-images.githubusercontent.com/7339169/56473300-2f3cbf80-6437-11e9-811f-ce7a4fc50ef5.png)
-
 Each node in the private cluster should also have the following `/etc/hosts` file to quickly look up other hosts in the cluster.
 ```
 10.128.0.4	config
@@ -66,33 +64,11 @@ If you want to create your own cluster, please follow the directions below.
 
 Adapted from MongoDB documentation: [https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/) 
 
-**Run these commands in order for each Mongo node**
-1. `sudo apt-get update && sudo apt-get upgrade` 
-2. `sudo apt-get install dirmngr -y`
-3. `sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4`
-4. `echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list`
-5. `sudo apt-get update`
-6. `sudo apt-get install -y mongodb-org`
-7. Make sure `/data` exists, if not, create the directory. Also create `/data/db`
+Run `bash init/install.sh` then run `bash init/init.sh`
 
-8. Append to `/etc/hosts`. This allows us to reference private IPs using aliases in server set up. Replace with your own private IPs if you are using your own cluster configuration.
-```
-10.128.0.4	config
-10.150.0.2	hadoop
-10.128.0.7	router
-10.142.0.9	shard1
-10.142.0.10	shard2
-10.142.0.8	shard3
-10.142.0.11	shard4
-10.142.0.12	shard5
-10.142.0.13	shard6
-10.142.0.14	shard7
-10.142.0.15	shard8
-```
+# Next, create config server, shard server, and router servers (in order)
 
-**Next, create config server, shard server, and router servers (in order)**
-
-## 1. for config server only
+## 1. Config Server
 
 Directions adapted from here: [mongod — MongoDB Manual](https://docs.mongodb.com/manual/reference/program/mongod/#sharded-cluster-options)
 
@@ -100,11 +76,13 @@ Directions adapted from here: [mongod — MongoDB Manual](https://docs.mongodb.c
 
 2. `sudo mongod --configsvr --replSet configReplSet --dbpath /data/configdb --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log`
 
-Execute this in ONE config server only (primary replica)
+Execute this in ONE config server only (primary replica) This is used to tell mongo where the config servers are.
+
+
 3. Enter mongo shell: `mongo config:27019`
 `rs.initiate( { _id: "configReplSet", configsvr: true, members: [ { _id: 0, host: "config:27019" }] } )`
 
-## 2. for shard server only
+## 2. Shard Server(s)
 
 First make sure `/data/db/` exists in all shard servers before you execute the below
 1. SSH into each shard server and run: `sudo mongod --shardsvr --replSet <REPL_SET_NAME>  --dbpath /data/db --bind_ip localhost,<SHARD_ALIAS> --fork --logpath /var/log/mongodb.log`
@@ -114,15 +92,15 @@ Shard alias: `shard1`, `shard2`, etc.
 Shard repl set name: `shardReplSet1`,  `shardReplSet2`, etc.
 
 
-## 3. for router server only
-Best practice: for each MR client node, run a single instance of `mongos` , which interfaces query routing.
+## 3. Router Server (make sure shard servers are set up)
+Best practice: for each MR client node, run a single instance of `mongos` , which interfaces query routing for shards.
 
 ### Create Router Server and Sharding Config
 
 1. Start the mongos daemon: `sudo mongos --configdb configReplSet/config:27019 --bind_ip localhost,router --fork --logpath /var/log/mongodb.log`
 2. Log into mongos: `mongo router:27017`
 3. First execute `use cloud` to create database if haven’t created already
-4. To add replica shards from step 2 to the cluster, run these commands, one for each replica shard until everything is added.  `sh.addShard("shardReplSet1/shard1:27018")`, `sh.addShard("shardReplSet2/shard2:27018")`
+4. To add replica shards from step 2 to the cluster, run these commands, one for each replica shard until everything is added.  `sh.addShard("shardReplSet1/shard1:27018")`, `sh.addShard("shardReplSet2/shard2:27018")` ... , `sh.addShard("shardReplSet8/shard8:27018")`
 5. Enable sharding on the db `sh.enableSharding("cloud")`
 6. Choose `hashed` sharding strategy and collection to shard `sh.shardCollection("cloud.messages", { _id: "hashed" })`
 
