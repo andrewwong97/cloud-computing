@@ -97,7 +97,7 @@ sudo killall mongo
 sudo mongos --configdb configReplSet/config:27017 -port 27017 --bind_ip 127.0.0.1,router --fork --logpath /var/log/mongos.log
 
 #run mongo instant on port that mongos is listening to
-mongo --host router --port 27020 << 'EOF'
+mongo --host router --port 27017 << 'EOF'
 
 sh.addShard("shardReplSet1/10.128.0.5:27017")
 sh.addShard("shardReplSet1/10.128.0.5:27018")
