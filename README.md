@@ -34,7 +34,7 @@ Each node in the private cluster should also have the following `/etc/hosts` fil
 ```
 10.128.0.4	config
 10.150.0.2	hadoop
-10.128.0.3	router
+10.128.0.7	router
 10.142.0.9	shard1
 10.142.0.10	shard2
 10.142.0.8	shard3
@@ -79,7 +79,7 @@ Adapted from MongoDB documentation: [https://docs.mongodb.com/manual/tutorial/in
 ```
 10.128.0.4	config
 10.150.0.2	hadoop
-10.128.0.3	router
+10.128.0.7	router
 10.142.0.9	shard1
 10.142.0.10	shard2
 10.142.0.8	shard3
