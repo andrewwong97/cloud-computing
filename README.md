@@ -17,7 +17,9 @@ Using default Debian 9 node in Google Cloud Compute Engine with 3.75 GB of memor
 
 `shard2` - shard server 2
 
-`config1` - holds metadata about shards and shard lookup table
+`shardN`  - shard server N
+
+`config` - holds metadata about shards and shard lookup table
 
 
 **Architecture**
@@ -28,17 +30,38 @@ As long as you are ssh'ed into a node with the private cluster, then connecting 
 
 ![image](https://user-images.githubusercontent.com/7339169/56473300-2f3cbf80-6437-11e9-811f-ce7a4fc50ef5.png)
 
-Each node in the private cluster also has the following `/etc/hosts` file to quickly look up other hosts in the cluster.
+Each node in the private cluster should also have the following `/etc/hosts` file to quickly look up other hosts in the cluster.
 ```
+10.128.0.4	config
 10.150.0.2	hadoop
 10.128.0.3	router
-10.128.0.5	shard1
-10.128.0.6	shard2
-10.128.0.4	config
+10.142.0.9	shard1
+10.142.0.10	shard2
+10.142.0.8	shard3
+10.142.0.11	shard4
+10.142.0.12	shard5
+10.142.0.13	shard6
+10.142.0.14	shard7
+10.142.0.15	shard8
 ```
 
+**TIP:**
+Add this to your bashrc file to easily ssh into the servers:
+```
+35.245.187.84	hadoop
+35.225.61.34	router
+35.238.87.99	config
+35.231.161.115	shard1
+34.74.10.88	shard2
+104.196.191.234	shard3
+104.196.106.11	shard4
+35.196.142.43	shard5
+34.73.238.145	shard6
+35.237.151.254	shard7
+34.73.245.126	shard8
+```
 
-## New Mongo Server Setup
+## New Mongo Server Setup - see `init/` for scripted setup
 If you want to create your own cluster, please follow the directions below. 
 
 Adapted from MongoDB documentation: [https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/) 
@@ -50,15 +73,21 @@ Adapted from MongoDB documentation: [https://docs.mongodb.com/manual/tutorial/in
 4. `echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list`
 5. `sudo apt-get update`
 6. `sudo apt-get install -y mongodb-org`
-7. Make sure `/data` exists, if not, create the directory.
+7. Make sure `/data` exists, if not, create the directory. Also create `/data/db`
 
-7. Append to `/etc/hosts`. This allows us to reference private IPs using aliases in server set up. Replace with your own private IPs if you are using your own cluster configuration.
+8. Append to `/etc/hosts`. This allows us to reference private IPs using aliases in server set up. Replace with your own private IPs if you are using your own cluster configuration.
 ```
-10.142.0.2	hadoop
-10.128.0.3	router
-10.128.0.5	shard1
-10.128.0.6	shard2
 10.128.0.4	config
+10.150.0.2	hadoop
+10.128.0.3	router
+10.142.0.9	shard1
+10.142.0.10	shard2
+10.142.0.8	shard3
+10.142.0.11	shard4
+10.142.0.12	shard5
+10.142.0.13	shard6
+10.142.0.14	shard7
+10.142.0.15	shard8
 ```
 
 **Next, create config server, shard server, and router servers (in order)**
@@ -67,7 +96,7 @@ Adapted from MongoDB documentation: [https://docs.mongodb.com/manual/tutorial/in
 
 Directions adapted from here: [mongod — MongoDB Manual](https://docs.mongodb.com/manual/reference/program/mongod/#sharded-cluster-options)
 
-1. `mkdir /data/configdb/`
+1. `mkdir /data && mkdir /data/configdb/`
 
 2. `sudo mongod --configsvr --replSet configReplSet --dbpath /data/configdb --bind_ip 127.0.0.1,config --fork --logpath /var/log/mongodb.log`
 
@@ -78,12 +107,12 @@ Execute this in ONE config server only (primary replica)
 ## 2. for shard server only
 
 First make sure `/data/db/` exists in all shard servers before you execute the below
-1. ssh into shard1 server: `sudo mongod --shardsvr --replSet shardReplSet1  --dbpath /data/db --bind_ip localhost,shard1 --fork --logpath /var/log/mongodb.log`
-	- run  `sudo mongo shard1:27018` and `rs.initiate()` in the mongo shell to initiate the replica set
-2. Do the same for shard2 server: `sudo mongod --shardsvr --replSet shardReplSet2  --dbpath /data/db --bind_ip localhost,shard2 --fork --logpath /var/log/mongodb.log`
-	- run  `sudo mongo shard2:27018` and `rs.initiate()` in the mongo shell to initiate the replica set
+1. SSH into each shard server and run: `sudo mongod --shardsvr --replSet <REPL_SET_NAME>  --dbpath /data/db --bind_ip localhost,<SHARD_ALIAS> --fork --logpath /var/log/mongodb.log`
+	- run  `sudo mongo <SHARD_ALIAS>:27018` and `rs.initiate()` in the mongo shell to initiate the replica set
 
-Shard ids: `shardReplSet1`,  `shardReplSet2`
+Shard alias: `shard1`, `shard2`, etc.
+Shard repl set name: `shardReplSet1`,  `shardReplSet2`, etc.
+
 
 ## 3. for router server only
 Best practice: for each MR client node, run a single instance of `mongos` , which interfaces query routing.
