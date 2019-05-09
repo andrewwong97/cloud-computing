@@ -15,6 +15,9 @@ sudo killall mongo
 #ssh into config
 config1 << !
 
+sudo killall mongod
+sudo killall mongos
+sudo killall mongo
 sudo rm -rf /data/rs*
 sudo mkdir -p /data/rs1
 
@@ -34,6 +37,9 @@ EOF
 #Creating Shard 1
 shard1 << !
 
+sudo killall mongod
+sudo killall mongos
+sudo killall mongo
 sudo rm -rf /data/rs*
 sudo mkdir -p /data/rs1 /data/rs2 /data/rs3
 
@@ -58,6 +64,9 @@ EOF
 #Creating Shard 1
 shard2 << !
 
+sudo killall mongod
+sudo killall mongos
+sudo killall mongo
 sudo rm -rf /data/rs*
 sudo mkdir -p /data/rs1 /data/rs2 /data/rs3
 
@@ -82,6 +91,9 @@ EOF
 #Connect mongos
 router << !
 
+sudo killall mongod
+sudo killall mongos
+sudo killall mongo
 sudo mongos --configdb configReplSet/config:27017 -port 27017 --bind_ip 127.0.0.1,router --fork --logpath /var/log/mongos.log
 
 #run mongo instant on port that mongos is listening to
