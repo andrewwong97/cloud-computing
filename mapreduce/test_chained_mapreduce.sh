@@ -29,56 +29,68 @@ function test {
 }
 
 echo "==================== 1 Chain ===================="
-echo "Test DB (in memory Python dict):"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Test DB (in memory Python dict): $DATE"
 time (test "test_db.py" 1)
 echo
 
-echo "Replicated DB (sharded across nodes):"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Replicated DB (sharded across nodes): $DATE"
 time (test "shard_db.py" 1)
 echo
 
-echo "Cached DB (single node with Redis)"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Cached DB (single node with Redis): $DATE"
 time (test "cache_db.py" 1)
 echo
 
 echo "==================== 2 Chain ===================="
-echo "Test DB (in memory Python dict):"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Test DB (in memory Python dict): $DATE"
 time (test "test_db.py" 2)
 echo
 
-echo "Replicated DB (sharded across nodes):"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Replicated DB (sharded across nodes): $DATE"
 time (test "shard_db.py" 2)
 echo
 
-echo "Cached DB (single node with Redis)"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Cached DB (single node with Redis): $DATE"
 time (test "cache_db.py" 2)
 echo
 
 
 echo "==================== 4 Chain ===================="
-echo "Test DB (in memory Python dict):"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Test DB (in memory Python dict): $DATE"
 time (test "test_db.py" 4)
 echo
 
-echo "Replicated DB (sharded across nodes):"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Replicated DB (sharded across nodes): $DATE"
 time (test "shard_db.py" 4)
 echo
 
-echo "Cached DB (single node with Redis)"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Cached DB (single node with Redis): $DATE"
 time (test "cache_db.py" 4)
 echo
 
 
 
 echo "==================== 8 Chain ===================="
-echo "Test DB (in memory Python dict):"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Test DB (in memory Python dict): $DATE"
 time (test "test_db.py" 8)
 echo
 
-echo "Replicated DB (sharded across nodes):"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Replicated DB (sharded across nodes): $DATE"
 time (test "shard_db.py" 8)
 echo
 
-echo "Cached DB (single node with Redis)"
+DATE=`date +"%H:%M:%S:%s%:z"`
+echo "Cached DB (single node with Redis): $DATE"
 time (test "cache_db.py" 8)
 echo

@@ -128,3 +128,5 @@ Adapted from:
 
 ## Hadoop - Chained MapReduce
 As a simple initial test, we create 2^10 random samples of key, message pairs as would be found in or database, and pipes it to the mapper and reducer: `./test_mapreduce.sh`
+
+In order to profile the CPU and memory usage of MongoDB, use use `./mapreduce/db_profile.sh <output file> <millisecond delay time>`. This will get real time CPU percentage and memory usage (mongod process vs total available) and write out to a CSV.
