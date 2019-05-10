@@ -9,8 +9,22 @@ KEY_SIZE=$2
 # $3 - number of chains
 NUM_CHAINS=$3
 
-redis-cli flushall
+# $4 - cache size, in number of MB
+CACHE_SIZE=$4
 
+# remove old cache size and set new size
+sudo sed -i '$ d' /etc/redis/redis.conf
+printf "maxmemory %smb" $CACHE_SIZE | sudo tee -a /etc/redis/redis.conf > /dev/null
+
+# reset the cache and restart service
+function reset_redis {
+    redis-cli flushall > /dev/null
+    sudo systemctl stop redis-server.service
+    sudo systemctl start redis-server.service
+    redis-cli flushall > /dev/null
+}
+
+# generate random starting keys
 shuf -i 0-$DB_SIZE -n $KEY_SIZE > test_input.txt
 
 # $1 - db type (single, cloud), $2 - number of chains
@@ -31,14 +45,17 @@ function test {
         let COUNTER=COUNTER+1 
     done
 
+    # get cache hit/miss statistics
+    redis-cli info stats
+
     cp "temp_$COUNTER.txt" "$1_output.txt"
     rm -rf temp_*.txt
 }
 
+# reset_redis
 #echo "Replicated:"
 #test "cloud" $NUM_CHAINS
 
+reset_redis
 echo "Single:"
 test "single" $NUM_CHAINS
-redis-cli flushall
-
