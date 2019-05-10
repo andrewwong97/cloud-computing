@@ -18,12 +18,11 @@ def write_random_lowercase(n):
 # export mongodb dump to stdout
 # can be directly imported using mongoimport tool
 # by running mongoimport --db cloud --collection messages --file /path/to/data.json --jsonArray
-d = []
+
 print(sys.argv[1])
 init = int(sys.argv[1]) * 500000
 
-for i in range(init, init + 500000):
-	d.append({ "_id": i, "message": write_random_lowercase(100) })
-
-with open('data1.json', 'w') as f:
-	json.dump(d, f, indent=4, ensure_ascii=False)
+with open('data1.json', 'a+') as f:
+    for i in range(init, init + 500000):
+        s = json.dumps({ "_id": i, "message": write_random_lowercase(100) }, ensure_ascii=False)
+        f.write(s + '\n')

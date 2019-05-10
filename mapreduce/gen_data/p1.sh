@@ -1,7 +1,7 @@
 #!/bin/bash
 mongos router:27018 << EOF
 use cloud
-db.messages.drop()
+db.dropDatabase()
 EOF
 
 for i in $(seq 0 133);
