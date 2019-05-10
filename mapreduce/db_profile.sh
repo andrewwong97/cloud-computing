@@ -18,7 +18,7 @@ do
 
     # top CPU output is inconsistent, hacky fix
 	CPU=$(top -b -n 1| grep -w mongod | tr -s ' ' | cut -d ' ' -f 9)
-    if [[ $CPU == *"."* ]]; then
+    if [[ $CPU != *"."* ]]; then
         CPU=$(top -b -n 1| grep -w mongod | tr -s ' ' | cut -d ' ' -f 10)
     fi
 	MEM=$(sudo pmap -x $(pgrep mongo) | tail -1 | grep -o -E '[0-9]+' | head -1)
