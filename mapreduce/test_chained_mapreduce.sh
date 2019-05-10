@@ -18,13 +18,12 @@ function test {
     COUNTER=0
     while [ $COUNTER -lt $2 ]; do
 	DATE=`date +"%H:%M:%S:%s%:z"`
-	echo -n "$DATE, $COUNTER, "
-        
+       
 	START=$(date +%s%N)
         cat $INPUT_FILE | python db_client.py $1 | python mapper.py | python reducer.py > "temp_$((COUNTER+1)).txt"
         END=$(date +%s%N)
         
-        echo "$((END - START))"
+        echo "$DATE, $COUNTER, $((END - START))"
         
         INPUT_FILE="temp_$((COUNTER+1)).txt"
         let COUNTER=COUNTER+1 
