@@ -9,6 +9,7 @@ import sys
 # can be directly imported using mongoimport tool
 # by running mongoimport --db cloud --collection messages --file /path/to/data.json --jsonArray
 d = []
+print(sys.argv[1])
 init = int(sys.argv[1])*500000
 #file = 'data' + sys.argv[1] + '.json'
 
