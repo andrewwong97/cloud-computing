@@ -46,7 +46,9 @@ function test {
     done
 
     # get cache hit/miss statistics
-    redis-cli info stats
+    redis-cli info stats | grep keyspace
+    echo
+
 
     cp "temp_$COUNTER.txt" "$1_output.txt"
     rm -rf temp_*.txt
