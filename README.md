@@ -30,21 +30,21 @@ As long as you are ssh'ed into a node with the private cluster, then connecting 
 
 Each node in the private cluster should also have the following `/etc/hosts` file to quickly look up other hosts in the cluster.
 ```
-10.128.0.4	config
-10.150.0.2	hadoop
-10.128.0.7	router
-10.142.0.9	shard1
+10.128.0.8	single
+10.142.0.19	hadoop-large-e1
+10.128.0.9	hadoop-c1
+10.142.0.20	router
+10.142.0.9	shard1 <-- corrupted
 10.142.0.10	shard2
 10.142.0.8	shard3
 10.142.0.11	shard4
 10.142.0.12	shard5
 10.142.0.13	shard6
-10.142.0.14	shard7
-10.142.0.15	shard8
+10.142.0.21 	shard7
 ```
 
 **TIP:**
-Add this to your bashrc file to easily ssh into the servers:
+Add this to your bashrc file to easily ssh into the servers. Note: some of these may have changed in cluster reconfigurations.
 ```
 35.245.187.84	hadoop
 35.225.61.34	router
@@ -92,12 +92,11 @@ Shard alias: `shard1`, `shard2`, etc.
 Shard repl set name: `shardReplSet1`,  `shardReplSet2`, etc.
 
 
-## 3. Router Server (make sure shard servers are set up)
-Best practice: for each MR client node, run a single instance of `mongos` , which interfaces query routing for shards.
+## 3. Router Server (make sure shard and config servers are set up)
 
 ### Create Router Server and Sharding Config
 
-1. Start the mongos daemon: `sudo mongos --configdb configReplSet/config:27019 --bind_ip localhost,router --fork --logpath /var/log/mongodb.log`
+1. Start the mongos daemon (assuming config is running on host `config`): `sudo mongos --configdb configReplSet/config:27019 --bind_ip localhost,router --fork --logpath /var/log/mongodb.log` 
 2. Log into mongos: `mongo router:27017`
 3. First execute `use cloud` to create database if haven’t created already
 4. To add replica shards from step 2 to the cluster, run these commands, one for each replica shard until everything is added.  `sh.addShard("shardReplSet1/shard1:27018")`, `sh.addShard("shardReplSet2/shard2:27018")` ... , `sh.addShard("shardReplSet8/shard8:27018")`
@@ -106,10 +105,8 @@ Best practice: for each MR client node, run a single instance of `mongos` , whic
 
 ### Data Ingress
 1. `git clone https://github.com/andrewwong97/cloud-computing.git`
-2. `pip install bson`
-3. `cd cloud-computing/mapreduce`
-4. Outside of mongo shell run: `mongoimport --db cloud --collection messages --file data.json --jsonArray`
-5. Inside of mongo shell (`mongo router:27017`) run `db.messages.getShardDistribution()` to check that sharding has worked successfully.
+2. `cd cloud-computing/mapreduce/gen_data`
+3. Run `p1.sh`, `p2.sh`, `p3.sh`, `p4.sh` in order or in parallel.
 
 
 ## Redis (Debian 9)
