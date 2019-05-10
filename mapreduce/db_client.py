@@ -2,7 +2,7 @@ import redis
 import sys
 
 from pymongo import MongoClient
-from util import client, redis_config
+from util import redis_config
 
 assert(len(sys.argv) == 2)
 

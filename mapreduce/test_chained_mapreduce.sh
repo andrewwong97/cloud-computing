@@ -17,11 +17,14 @@ function test {
     INPUT_FILE=test_input.txt
     COUNTER=0
     while [ $COUNTER -lt $2 ]; do
-        START=$(($(date +%s%N)/1000000))
-        cat $INPUT_FILE | python db_client.py $1 | python mapper.py | python reducer.py > "temp_$((COUNTER+1)).txt")
-        END=$(($(date +%s%N)/1000000))
+	DATE=`date +"%H:%M:%S:%s%:z"`
+	echo -n "$DATE, $COUNTER, "
         
-        echo "$COUNTER, $((END - START))"
+	START=$(date +%s%N)
+        cat $INPUT_FILE | python db_client.py $1 | python mapper.py | python reducer.py > "temp_$((COUNTER+1)).txt"
+        END=$(date +%s%N)
+        
+        echo "$((END - START))"
         
         INPUT_FILE="temp_$((COUNTER+1)).txt"
         let COUNTER=COUNTER+1 
@@ -31,10 +34,8 @@ function test {
     rm -rf temp_*.txt
 }
 
-DATE=`date +"%H:%M:%S:%s%:z"`
-echo "Replicated: $DATE"
-test "cloud" $NUM_CHAINS
+#echo "Replicated:"
+#test "cloud" $NUM_CHAINS
 
-DATE=`date +"%H:%M:%S:%s%:z"`
-echo "Single: $DATE"
+echo "Single:"
 test "single" $NUM_CHAINS
