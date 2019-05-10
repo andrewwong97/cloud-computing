@@ -13,7 +13,7 @@ sudo pkill mongo
 
 #instantiate the config server
 #ssh into config
-sudo ssh dan@34.74.106.7 << !
+router << !
 
 sudo pkill mongod
 sudo pkill mongos
@@ -37,7 +37,7 @@ EOF
 !
 
 #Creating Shard 1
-ssh dan@35.231.161.115 << !
+shard1<< !
 
 sudo pkill mongod
 sudo pkill mongos
