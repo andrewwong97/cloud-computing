@@ -5,12 +5,6 @@
 
 #need to change the "localhost" to theb ip
 
-#cleanup
-
-sudo killall mongod
-sudo killall mongos
-sudo killall mongo
-
 #instantiate the config server
 #ssh into config
 ssh dan@34.74.106.7 << !
@@ -55,4 +49,4 @@ mongo shard1:27017 << 'EOF'
 
 EOF
 
-!
+!g

@@ -1,7 +1,7 @@
 #!/bin/bash
 for i in $(seq 268 401);
 do
-   rm data3.json
-   python c3.py $i
-   mongoimport --db single --collection messages --file data3.json --jsonArray
+   rm data1.json
+   python c1.py $i
+   mongoimport --port 27018 --db cloud --collection messages --file data1.json --jsonArray
 done

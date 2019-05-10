@@ -1,6 +1,6 @@
 #!/bin/bash
-mongo << EOF
-use single
+mongos router:27018 << EOF
+use cloud
 db.messages.drop()
 EOF
 
@@ -8,5 +8,5 @@ for i in $(seq 0 133);
 do
    rm data1.json
    python c1.py $i
-   mongoimport --db single --collection messages --file data1.json --jsonArray
+   mongoimport --port 27018 --db cloud --collection messages --file data1.json --jsonArray
 done
