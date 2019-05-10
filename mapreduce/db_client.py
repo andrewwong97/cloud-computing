@@ -1,11 +1,13 @@
 import redis
 import sys
 
+from pymongo import MongoClient
 from util import client, redis_config
 
 assert(len(sys.argv) == 2)
 
-db = client[sys.argv[1]]
+client = MongoClient('mongodb://{}:27017'.format(sys.argv[1]))
+db = client['single']
 cache = redis.Redis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
 
 

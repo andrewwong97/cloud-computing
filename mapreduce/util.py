@@ -1,7 +1,4 @@
-# from pymongo import MongoClient
-
-# client = MongoClient('mongodb://router:27017')
-
+# default config for redis
 redis_config = { "host": "localhost", "port": 6379, "db": 0}
 
 # number of database entries
