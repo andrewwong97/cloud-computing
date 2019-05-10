@@ -10,7 +10,7 @@ ff02::2		ip6-allrouters
 10.128.0.8	single
 10.142.0.18	hadoop1
 10.128.0.9	hadoop2
-10.142.0.9	router
+10.142.0.17	router
 10.142.0.9	shard1
 10.142.0.10	shard2
 10.142.0.8	shard3
