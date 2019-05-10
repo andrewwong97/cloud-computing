@@ -7,6 +7,6 @@ EOF
 for i in $(seq 0 133);
 do
    rm data1.json
-   python create_data.py $i
+   python c1.py $i
    mongoimport --db single --collection messages --file data1.json --jsonArray
 done
