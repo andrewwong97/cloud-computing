@@ -3,7 +3,9 @@ import sys
 
 from util import client, redis_config
 
-db = client['single']
+assert(len(sys.argv) == 2)
+
+db = client[sys.argv[1]]
 cache = redis.Redis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
 
 
