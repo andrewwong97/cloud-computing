@@ -12,11 +12,9 @@ d = []
 init = int(sys.argv[1])*500000
 #file = 'data' + sys.argv[1] + '.json'
 
-
 for i in range(init, init + 500000):
-	message = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(100))
+        message = random.sample(5*string.ascii_uppercase + string.ascii_lowercase + string.digits, 100)
 	d.append({ "_id": i, "message": message })
-
 
 
 with open('data.json', 'w') as f:
