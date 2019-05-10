@@ -5,8 +5,8 @@ import json
 import sys
 import os
 
-min_lc = ord(b'a')
-len_lc = 26
+min_lc = ord(b'0')
+len_lc = 74
 
 def write_random_lowercase(n):
     ba = bytearray(os.urandom(n))
