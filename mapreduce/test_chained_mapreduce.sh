@@ -9,6 +9,8 @@ KEY_SIZE=$2
 # $3 - number of chains
 NUM_CHAINS=$3
 
+redis-cli flushall
+
 shuf -i 0-$DB_SIZE -n $KEY_SIZE > test_input.txt
 
 # $1 - db type (single, cloud), $2 - number of chains
@@ -17,7 +19,7 @@ function test {
     INPUT_FILE=test_input.txt
     COUNTER=0
     while [ $COUNTER -lt $2 ]; do
-	DATE=`date +"%H:%M:%S:%s%:z"`
+	DATE=`date +"%H:%M:%S:%N"`
        
 	START=$(date +%s%N)
         cat $INPUT_FILE | python db_client.py $1 | python mapper.py | python reducer.py > "temp_$((COUNTER+1)).txt"
@@ -38,3 +40,5 @@ function test {
 
 echo "Single:"
 test "single" $NUM_CHAINS
+redis-cli flushall
+
