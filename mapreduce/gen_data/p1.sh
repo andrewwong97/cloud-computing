@@ -1,5 +1,5 @@
 #!/bin/bash
-mongo router:27017/single << EOF
+mongo << EOF
 use single
 db.messages.drop()
 EOF
