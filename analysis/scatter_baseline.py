@@ -9,7 +9,7 @@ COLORS = [
     'xkcd:red',
     'xkcd:purple',
     'xkcd:blue',
-    'xkcd:teal',
+    'xkcd:black',
     'xkcd:green',
     'xkcd:orange',
     'xkcd:pink',
@@ -51,7 +51,7 @@ colors = list(map(lambda x: color(x), range(0, len(samples))))
 labels = list(map(lambda x: x.cache, samples))
 
 fig, sp = plt.subplots(len(dependent_vars), sharex=True)
-fig.suptitle('Results vs. MR Chain Length ({} Replicas per Shard, {} Shards)'.format(REPLICAS_PER_SHARD, SHARDS), fontsize=14, fontweight='bold')
+fig.suptitle('Results vs. MR Chain Length ({} Replica per Shard, {} Shard)'.format(REPLICAS_PER_SHARD, SHARDS), fontsize=14, fontweight='bold')
 fig.subplots_adjust(top=0.92)
 
 for plt_index, (dependent_var, ylabel) in enumerate(dependent_vars):
