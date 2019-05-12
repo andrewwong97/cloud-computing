@@ -1,9 +1,4 @@
 #!/bin/bash
-mongos router:27018 << EOF
-use cloud
-db.dropDatabase()
-EOF
-
 for i in $(seq 0 133);
 do
    rm data1.json
