@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 DB_SIZE = 8
-REPLICAS_PER_SHARD = 2
 
 COLORS = [
     'xkcd:red',
@@ -56,30 +55,30 @@ dependent_vars = [
 labels = list(map(lambda x: x.cache, samples))
 
 fig, sp = plt.subplots(len(dependent_vars), sharex=True)
-fig.suptitle('Results vs. Shards ({} Replicas per Shard)'.format(REPLICAS_PER_SHARD), fontsize=14, fontweight='bold')
+fig.suptitle('Results vs. Replicas (1 GB Cache)', fontsize=14, fontweight='bold')
 fig.subplots_adjust(top=0.92)
 
 for plt_index, (dependent_var, operator, ylabel) in enumerate(dependent_vars):
-    cache_data = defaultdict(list)
+    shard_data = defaultdict(list)
 
     for i in range(0, int(len(samples)/8)):
-        if samples[i*8].rps != REPLICAS_PER_SHARD:
+        if samples[i*8].cache != 1:
             continue
 
-        x = samples[i*8].shards
+        x = samples[i*8].rps
         y = operator(list(map(dependent_var, samples[i*8:(i+1)*8])))
-        cache = samples[i*8].cache
-        cache_data[cache].append((x, y))
+        shard = samples[i*8].shards
+        shard_data[shard].append((x, y))
 
-    for cache, points in sorted(cache_data.items()):
+    for shard, points in sorted(shard_data.items()):
         x = list(map(lambda x: x[0], points))
         y = list(map(lambda x: x[1], points))
-        sp[plt_index].scatter(x, y, label=str(cache) + ' GB Cache', alpha=1)
+        sp[plt_index].scatter(x, y, label=str(shard) + (' Shards' if shard != 1 else ' Shard'), alpha=1)
 
     sp[plt_index].set(ylabel=ylabel)
 
 sp[-1].legend(bbox_to_anchor=(0., -0.5, 1., .102), loc='upper left',
            ncol=3, mode="expand", borderaxespad=0.)
-sp[-1].set(xlabel='Shards')
-sp[-1].set_xticks([1, 2, 4])
+sp[-1].set(xlabel='Replicas')
+sp[-1].set_xticks([1, 2])
 plt.show()

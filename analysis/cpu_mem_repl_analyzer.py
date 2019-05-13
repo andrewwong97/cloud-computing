@@ -15,6 +15,9 @@ start_new = True
 potential_break = False
 with open('data.tsv', 'r') as f:
     for line in f:
+        if line.startswith('T'):
+            continue
+
         sample = Sample(line)
         if sample.cpu == 0:
             if potential_break:
@@ -29,7 +32,7 @@ with open('data.tsv', 'r') as f:
             sequences[-1].append(sample)
             potential_break = False
 
-filtered_sequences = filter(lambda x: len(x) > 12, sequences)
+filtered_sequences = filter(lambda x: len(x) > 6, sequences)
 
 for index, sequence in enumerate(filtered_sequences):
     cpu_percentages = list(map(lambda x: x.cpu, sequence))
