@@ -130,5 +130,11 @@ Adapted from:
 - How to use Redis as an LRU cache:   [https://redis.io/topics/lru-cache](https://redis.io/topics/lru-cache) 
 - Installation notes:   [https://tecadmin.net/install-redis-on-debian-9-stretch/](https://tecadmin.net/install-redis-on-debian-9-stretch/) 
 
-## Hadoop - Chained MapReduce
+## Chained MapReduce
 As a simple initial test, we create 2^10 random samples of key, message pairs as would be found in or database, and pipes it to the mapper and reducer: `./test_mapreduce.sh`
+
+In order to trigger the full chained mapreduce test, run the following on the mapreduce node: `./test_chained_mapreduce <db_size> <keyset_size> <num_chains> <redis_size>`. The `db_size` specifies the number of entires in the database - in our case, 8GB was about 58354000 entries. The `keyset_size` specifies the initial set of keys to be computed on. The `num_chains` specifies the number of iterations of consecutive map-reduce stages. The `redis_size` specifies the size in MB for the redis cache.
+
+Each execution will run tests for both the `single` and `cloud` (sharded with or without replicas) databaseses. It flushes the local redis cache and re-initializes with the specified size. Job times for each chain and cahce hit/miss statistics are logged to STDOUT.
+
+On each of the shard servers, run `./mapreduce/db_profile.sh <outfile>`. This will log the CPU and memory usage every 200ms to `outfile` as a CSV. For the case of shards with replicas, the CPU of each process running each replica will be logged, and can be aggregated later for analysis. Between profiling, we must kill all `mongo`, `mongod`, and `mongos` processes in order to have consistent and unbiased metrics.
